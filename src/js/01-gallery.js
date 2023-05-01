@@ -2,46 +2,24 @@
 import { galleryItems } from './gallery-items';
 // Change code below this line
 
-// import SimpleLightbox from 'simplelightbox';
-// import 'simplelightbox/dist/simple-lightbox.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 console.log(galleryItems);
 const ulGallery = document.querySelector('.gallery');
-console.log(ulGallery);
 
-function createGallery(elements) {
-  return elements
-    .map(
-      el => `
-  <li class='gallery__item>
-    <a class = 'gallery__link' href ='${el.original}'>
-      <img
-      class='gallery__image'
-        src='${el.preview}'        
-        alt='${el.description}'
-      />
-    </a>
-  </li> 
-  `
-    )
-    .join('');
-}
+const makeGalleryMarkup = image => {
+  const { preview, original, description } = image;
 
-const liGallery = createGallery(galleryItems);
+  return `<a class="gallery__item" href="${original}">
+  <img class="gallery__image" src="${preview}" alt="${description}" />
+</a>`;
+};
 
-ulGallery.innerHTML = liGallery;
+const makeGallery = galleryItems.map(makeGalleryMarkup).join('');
+ulGallery.insertAdjacentHTML('afterbegin', makeGallery);
 
-const images = document.querySelectorAll('img');
-const altValues = [];
-
-images.forEach(image => {
-  altValues.push(image.alt);
-});
-
-console.log(altValues);
-
-let lightbox = new SimpleLightbox({
-  elements: document.querySelectorAll('li'),
-  captions: altValues,
+let lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
   captionDelay: 250,
 });
